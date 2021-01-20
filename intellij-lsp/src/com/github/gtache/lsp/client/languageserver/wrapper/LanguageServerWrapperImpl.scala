@@ -200,10 +200,14 @@ class LanguageServerWrapperImpl(val serverDefinition: LanguageServerDefinition, 
                     val documentListener = new DocumentListenerImpl
                     val selectionListener = new SelectionListenerImpl
                     val renameProvider = capabilities.getRenameProvider
-                    val renameOptions = if (renameProvider.isLeft) {
-                      if (renameProvider.getLeft) new RenameOptions() else null
+                    val renameOptions = if (renameProvider == null) {
+                      null
                     } else {
-                      renameProvider.getRight
+                      if (renameProvider.isLeft) {
+                        if (renameProvider.getLeft) new RenameOptions() else null
+                      } else {
+                        renameProvider.getRight
+                      }
                     }
                     val serverOptions = ServerOptions(syncKind, capabilities.getCompletionProvider, capabilities.getSignatureHelpProvider,
                       capabilities.getCodeLensProvider, capabilities.getDocumentOnTypeFormattingProvider, capabilities.getDocumentLinkProvider,
